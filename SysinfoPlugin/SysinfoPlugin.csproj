@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <PublishAot>true</PublishAot>
+    <NativeLibrary>Shared</NativeLibrary>
+    <Version>0.1.0</Version>
+    <SysinfoLibraryExtension Condition="$([System.String]::Copy('$(RuntimeIdentifier)').StartsWith('linux-'))">so</SysinfoLibraryExtension>
+    <SysinfoLibraryExtension Condition="'$(SysinfoLibraryExtension)' == ''">dll</SysinfoLibraryExtension>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Application\Application.csproj" />
+    <PackageReference Include="Sudzekai.LinCtrl.Assembly" Version="0.5.0" />
+  </ItemGroup>
+
+  <Target Name="WritePluginManifest" AfterTargets="Publish">
+    <WriteLinesToFile File="$(PublishDir)manifest.json"
+                      Lines='{ "name": "Sysinfo", "version": "$(Version)", "summary": "Информация о сервере", "assemblies": ["SysinfoPlugin.$(SysinfoLibraryExtension)"] }'
+                      Overwrite="true" Encoding="UTF-8" />
+  </Target>
+
+</Project>
